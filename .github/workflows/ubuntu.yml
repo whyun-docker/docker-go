@@ -3,12 +3,12 @@ name: ubuntu buiding
 on:
   push:
     branches:
-      - 'master'
-    tags:
-      - 'v*'
+      - 'main'
+    #tags:
+    #  - 'v*'
   pull_request:
     branches:
-      - 'master'
+      - 'main'
 env:
   TEST_TAG: yunnysunny/docker-node:latest
 
