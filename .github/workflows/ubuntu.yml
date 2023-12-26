@@ -21,20 +21,24 @@ jobs:
       matrix:        
         include:
         - node-version: 16.20.2
+          tags: |
+            16
+            16.20
+            16.20.2
         - node-version: 18.19.0
+          tags: |
+            18
+            18.19
+            18.19.0
         - node-version: 20.10.0
+          tags: |
+            20
+            20.10
+            20.10.0
+            latest 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Docker meta for core for node ${{ matrix.node-version }}
-        id: meta-core
-        uses: docker/metadata-action@v4
-        with:
-          images: |
-            yunnysunny/docker-node
-          tags: |
-            type=match,pattern=\d+.\d+.\d+,value=${{ matrix.node-version }}
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -52,16 +56,15 @@ jobs:
       #- name: Test nest
       #  run: |
       #    make test-nest
-      - name: Build and push for node ${{ matrix.node-version }} with tags ${{ steps.meta-core.outputs.tags }}
+      - name: Build and push for node ${{ matrix.node-version }} with tags${{ matrix.tags }}
         uses: docker/build-push-action@v3
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta-core.outputs.tags }}
-          labels: ${{ steps.meta-core.outputs.labels }}
-          cache-from: type=registry,ref=yunnysunny/docker-node:buildcache
-          cache-to: type=registry,ref=yunnysunny/docker-node:buildcache,mode=max
+          tags: ${{ matrix.tags }}
+          cache-from: type=registry,ref=yunnysunny/docker-node-${{ matrix.tags[0] }}:buildcache
+          cache-to: type=registry,ref=yunnysunny/docker-node-${{ matrix.tags[0] }}:buildcache,mode=max
           build-args: |
             NODE_VERSION=${{ matrix.node-version }}
 
