@@ -10,8 +10,7 @@ on:
     branches:
       - 'main'
 env:
-  TEST_TAG: yunnysunny/docker-node:latest
-
+  TAG_NAME: yunnysunny/docker-node
 
 jobs:
   docker:
@@ -21,21 +20,24 @@ jobs:
       matrix:        
         include:
         - node-version: 16.20.2
-          tags: |
-            16
-            16.20
-            16.20.2
+          major-version: 16
+          tags: 
+            yunnysunny/docker-node:16
+            yunnysunny/docker-node:16.20
+            yunnysunny/docker-node:16.20.2
         - node-version: 18.19.0
+          major-version: 18
           tags: |
-            18
-            18.19
-            18.19.0
+            yunnysunny/docker-node:18
+            yunnysunny/docker-node:18.19
+            yunnysunny/docker-node:18.19.0
         - node-version: 20.10.0
+          major-version: 20
           tags: |
-            20
-            20.10
-            20.10.0
-            latest 
+            yunnysunny/docker-node:20
+            yunnysunny/docker-node:20.10
+            yunnysunny/docker-node:20.10.0
+            yunnysunny/docker-node:latest 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -63,8 +65,8 @@ jobs:
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ matrix.tags }}
-          cache-from: type=registry,ref=yunnysunny/docker-node-${{ fromJson(matrix.tags)[0] }}:buildcache
-          cache-to: type=registry,ref=yunnysunny/docker-node-${{ fromJson(matrix.tags)[0] }}:buildcache,mode=max
+          cache-from: type=registry,ref=yunnysunny/docker-node-${{ matrix.major-version }}:buildcache
+          cache-to: type=registry,ref=yunnysunny/docker-node-${{ matrix.major-version }}:buildcache,mode=max
           build-args: |
             NODE_VERSION=${{ matrix.node-version }}
 
