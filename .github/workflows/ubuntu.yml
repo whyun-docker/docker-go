@@ -21,7 +21,7 @@ jobs:
         include:
         - node-version: 16.20.2
           major-version: 16
-          tags: 
+          tags: |
             yunnysunny/docker-node:16
             yunnysunny/docker-node:16.20
             yunnysunny/docker-node:16.20.2
